@@ -52,7 +52,44 @@ var CommentBox = React.createClass({
   }
 });
 
+var ItemListing = React.createClass({
+  componentDidMount: function() {
+    var github = new Github();
+    var that = this;
+    var repo = github.getRepo("ptsteadman", "notebook");
+    repo.contents('master', "", function(err, contents){
+      if(!err)
+        console.log(contents);
+        that.setState({ data: contents });
+    });
+  },
+  getInitialState: function() {
+    return {data: []};
+  },
+  render: function() {
+    var items = this.state.data.map(function(item) {
+      return (
+        <Item item={item}></Item>
+      );
+    });
+    return (
+      <div className="itemListing">
+        <h1>Items</h1>
+        {items}
+      </div>
+    );
+  }
+});
+
+var Item = React.createClass({
+  render: function(){
+    return (
+        <h2>{this.props.item.name}</h2>
+    )
+  }
+});
+
 ReactDOM.render(
-  <h1>Test</h1>,
+  <ItemListing></ItemListing>,
   document.getElementById('content')
 );
